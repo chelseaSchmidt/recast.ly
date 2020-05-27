@@ -39,8 +39,11 @@ class App extends React.Component {
 
   //Exp : On click event of a video title, the App currentVideo state will be changed to the parent video object
 
-  handleClick() {
-    console.log('click step 2');
+  handleClick(video) {
+    this.setState({
+      videosListed: this.state.videosListed,
+      currentVideo: video
+    });
   }
 
   render() {
@@ -53,7 +56,7 @@ class App extends React.Component {
         </nav>
         <div className="row">
           <div className="col-md-7">
-            <VideoPlayer video={this.state.currentVideo} onClick={this.handleClick} />
+            <VideoPlayer video={this.state.currentVideo} />
           </div>
           <div className="col-md-5">
             <VideoList videos={this.state.videosListed} clickHandler={this.handleClick} />
