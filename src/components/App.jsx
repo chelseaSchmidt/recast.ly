@@ -27,18 +27,20 @@ class App extends React.Component {
       videosListed: exampleVideoData,
       currentVideo: exampleVideoData[0]
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  //on title click
-  onTitleClick() {
-    //target the video that had the title clicked
-    let targetVideo = this.key;
-    //change current video to this one clicked
-    this.setState({
-      currentVideo: exampleVideoData.filter(video => (
-        video.id.videoId === targetVideo
-      ))
-    });
+  //J   : Detect user selection of a video list entry title; change the currentVideo state to point to video list entry whose title was clicked.
+
+  //I   : click event, "this" i.e. the element that triggered
+  //O/SE: change App currentVideo state
+  //C   : functional components cannot have state
+  //EC  : none
+
+  //Exp : On click event of a video title, the App currentVideo state will be changed to the parent video object
+
+  handleClick() {
+    console.log('click step 2');
   }
 
   render() {
@@ -51,10 +53,10 @@ class App extends React.Component {
         </nav>
         <div className="row">
           <div className="col-md-7">
-            <VideoPlayer video={this.state.currentVideo} />
+            <VideoPlayer video={this.state.currentVideo} onClick={this.handleClick} />
           </div>
           <div className="col-md-5">
-            <VideoList videos={this.state.videosListed} onClick={function () { console.log('test'); }} />
+            <VideoList videos={this.state.videosListed} clickHandler={this.handleClick} />
           </div>
         </div>
       </div>
