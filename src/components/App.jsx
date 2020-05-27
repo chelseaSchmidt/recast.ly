@@ -24,8 +24,21 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      videoSelected: false
+      videosListed: exampleVideoData,
+      currentVideo: exampleVideoData[0]
     };
+  }
+
+  //on title click
+  onTitleClick() {
+    //target the video that had the title clicked
+    let targetVideo = this.key;
+    //change current video to this one clicked
+    this.setState({
+      currentVideo: exampleVideoData.filter(video => (
+        video.id.videoId === targetVideo
+      ))
+    });
   }
 
   render() {
@@ -38,10 +51,10 @@ class App extends React.Component {
         </nav>
         <div className="row">
           <div className="col-md-7">
-            <VideoPlayer video = {exampleVideoData[0]} />
+            <VideoPlayer video = {this.state.currentVideo}/>
           </div>
           <div className="col-md-5">
-            <VideoList videos = {exampleVideoData}/>
+            <VideoList videos = {this.state.videosListed}/>
           </div>
         </div>
       </div>
