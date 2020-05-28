@@ -1,43 +1,39 @@
 import VideoList from './VideoList.js';
 import VideoPlayer from './VideoPlayer.js';
 import exampleVideoData from '../data/exampleVideoData.js';
-
-// var App = () => (
-//   <div>
-//     <nav className="navbar">
-//       <div className="col-md-6 offset-md-3">
-//         <div><h5><em>search</em> view goes here</h5></div>
-//       </div>
-//     </nav>
-//     <div className="row">
-//       <div className="col-md-7">
-//         <VideoPlayer video = {exampleVideoData[0]} />
-//       </div>
-//       <div className="col-md-5">
-//         <VideoList videos = {exampleVideoData}/>
-//       </div>
-//     </div>
-//   </div>
-// );
+import YOUTUBE_API_KEY from '../config/youtube.js';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.initialize = () => {
+      let videoArray = [];
+      for (let i = 0; i < 5; i++) {
+        let emptyVideo = {
+          kind: '',
+          etag: '',
+          id: {
+            kind: '',
+            videoId: ''
+          },
+          snippet: {
+            thumbnails: {
+              default: ''
+            }
+          }
+        };
+        videoArray.push(emptyVideo);
+      }
+      return videoArray;
+    };
     this.state = {
-      videosListed: exampleVideoData,
-      currentVideo: exampleVideoData[0]
+      videosListed: this.initialize(),
+      currentVideo: this.initialize()[0]
     };
     this.handleClick = this.handleClick.bind(this);
+    this.searchYouTube = props.searchYouTube.bind(this);
+
   }
-
-  //J   : Detect user selection of a video list entry title; change the currentVideo state to point to video list entry whose title was clicked.
-
-  //I   : click event, "this" i.e. the element that triggered
-  //O/SE: change App currentVideo state
-  //C   : functional components cannot have state
-  //EC  : none
-
-  //Exp : On click event of a video title, the App currentVideo state will be changed to the parent video object
 
   handleClick(video) {
     this.setState({
@@ -66,8 +62,19 @@ class App extends React.Component {
     );
   }
 
+  componentDidMount() {
+    this.searchYouTube({ key: YOUTUBE_API_KEY, q: 'cute cats', maxResults: 5 }, (data) => {
+      this.setState({
+        videosListed: data,
+        currentVideo: data[0]
+      });
+    });
+  }
+
 }
 
-// In the ES6 spec, files are "modules" and do not share a top-level scope
-// `var` declarations will only exist globally where explicitly defined
+App.propTypes = {
+  searchYouTube: PropTypes.func.isRequired
+};
+
 export default App;
