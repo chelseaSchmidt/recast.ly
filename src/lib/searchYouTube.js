@@ -1,14 +1,13 @@
 import YOUTUBE_API_KEY from '../config/youtube.js';
 
-var searchYouTube = (options, callback = () => {}) => {
-  //Use jQuery to send a GET request to the search endpoint. This is the only time you should use jQuery in this sprint
-  // setup the $.ajax({
+var searchYouTube = (options = {}, callback = () => {}) => {
+
   $.ajax({
     url: 'https://www.googleapis.com/youtube/v3/search',
     type: 'GET',
-    data: JSON.stringify(options),
+    data: options,
     contentType: 'application/json',
-    success: console.log('Success'),
+    success: callback,
     error: () => console.error('Sumthin went wrong')
   });
 
