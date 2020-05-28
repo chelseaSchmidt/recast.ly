@@ -2,19 +2,29 @@ import VideoList from './VideoList.js';
 import VideoPlayer from './VideoPlayer.js';
 import exampleVideoData from '../data/exampleVideoData.js';
 import YOUTUBE_API_KEY from '../config/youtube.js';
+import Search from './Search.js';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.initialize = () => {
-      let videoArray = [];
+    this.state = {
+      videosListed: this.initialize(),
+      currentVideo: this.initialize()[0]
+    };
+    this.handleClick = this.handleClick.bind(this);
+    this.searchYouTube = props.searchYouTube.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  initialize() {
+    let videoArray = [];
       for (let i = 0; i < 5; i++) {
         let emptyVideo = {
           kind: '',
           etag: '',
           id: {
             kind: '',
-            videoId: ''
+            videoId: i
           },
           snippet: {
             thumbnails: {
@@ -24,15 +34,7 @@ class App extends React.Component {
         };
         videoArray.push(emptyVideo);
       }
-      return videoArray;
-    };
-    this.state = {
-      videosListed: this.initialize(),
-      currentVideo: this.initialize()[0]
-    };
-    this.handleClick = this.handleClick.bind(this);
-    this.searchYouTube = props.searchYouTube.bind(this);
-
+    return videoArray;
   }
 
   handleClick(video) {
@@ -42,12 +44,21 @@ class App extends React.Component {
     });
   }
 
+  handleChange(event) {
+    this.searchYouTube({ key: YOUTUBE_API_KEY, q: event.target.value, maxResults: 5 }, (data) => {
+      this.setState({
+        videosListed: data,
+        currentVideo: data[0]
+      });
+    });
+  }
+
   render() {
     return (
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <div><h5><em>search</em> view goes here</h5></div>
+            <Search handleChange={this.handleChange}/>
           </div>
         </nav>
         <div className="row">

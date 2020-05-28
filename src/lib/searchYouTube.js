@@ -1,7 +1,6 @@
 import YOUTUBE_API_KEY from '../config/youtube.js';
 
 var searchYouTube = (options = {}, callback = () => {}) => {
-  console.log(options);
   options.videoEmbeddable = true;
   options.type = 'video';
   options.part = 'id,snippet';
