@@ -2,21 +2,19 @@ import YOUTUBE_API_KEY from '../config/youtube.js';
 
 var searchYouTube = (options = {}, callback = () => {}) => {
 
-  $.ajax({
+  options.videoEmbeddable = true;
+  options.type = 'video';
+  options.part = 'id,snippet';
+  options.fields = 'items(kind,etag,id,snippet)';
+
+  $.get({
     url: 'https://www.googleapis.com/youtube/v3/search',
-    type: 'GET',
     data: options,
     contentType: 'application/json',
+    dataFilter: data => JSON.stringify(JSON.parse(data).items),
     success: callback,
     error: () => console.error('Sumthin went wrong')
   });
-
-  //Accept a callback function that is invoked with the videos array that is returned from hitting the endpoint
-
-  //Accept an options object with the following properties: query (the search string), max (the maximum number of videos to get, default to 5), key (API key)
-  //
-
-  //Only GET embeddable videos
 
 };
 
