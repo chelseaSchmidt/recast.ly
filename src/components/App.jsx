@@ -14,7 +14,7 @@ class App extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.searchYouTube = props.searchYouTube.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    // this.setTimeoutId = '';
+    this.timeoutId = undefined;
   }
 
   initialize() {
@@ -46,17 +46,18 @@ class App extends React.Component {
   }
 
   handleChange(event) {
-    // clearTimeout(this.setTimeoutId);
-    // let eventTargetValue = event.target.value;
-    // let context = this;
-    // setTimeout( function() {
-    //   context.searchYouTube({ key: YOUTUBE_API_KEY, q: eventTargetValue, maxResults: 5 }, (data) => {
-    //     this.setState({
-    //       videosListed: data,
-    //       currentVideo: data[0]
-    //     });
-    //   });
-    // }, 1000);
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    let eventTargetValue = event.target.value;
+    let context = this;
+    //wrap this in a setTimeout
+    this.searchYouTube({ key: YOUTUBE_API_KEY, q: event.target.value, maxResults: 5 }, (data) => {
+      this.setState({
+        videosListed: data,
+        currentVideo: data[0]
+      });
+    });
   }
 
   render() {
