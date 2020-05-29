@@ -9,55 +9,56 @@ class App extends React.Component {
     super(props);
     this.state = {
       videosListed: this.initialize(),
-      currentVideo: this.initialize()[0]
+      currentVideo: this.initialize()[0],
+      inputValue: null
     };
     this.handleClick = this.handleClick.bind(this);
     this.searchYouTube = props.searchYouTube.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.timeoutId = undefined;
+    this.handleChange = _.debounce(this.handleChange.bind(this), 500);
+    this.storeFormInput = this.storeFormInput.bind(this);
   }
 
   initialize() {
     let videoArray = [];
-      for (let i = 0; i < 5; i++) {
-        let emptyVideo = {
+    for (let i = 0; i < 5; i++) {
+      let emptyVideo = {
+        kind: '',
+        etag: '',
+        id: {
           kind: '',
-          etag: '',
-          id: {
-            kind: '',
-            videoId: i
-          },
-          snippet: {
-            thumbnails: {
-              default: ''
-            }
+          videoId: i
+        },
+        snippet: {
+          thumbnails: {
+            default: ''
           }
-        };
-        videoArray.push(emptyVideo);
-      }
+        }
+      };
+      videoArray.push(emptyVideo);
+    }
     return videoArray;
   }
 
   handleClick(video) {
     this.setState({
       videosListed: this.state.videosListed,
-      currentVideo: video
+      currentVideo: video,
+      inputValue: null
     });
   }
 
-  handleChange(event) {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
-    let eventTargetValue = event.target.value;
-    let context = this;
-    //wrap this in a setTimeout
-    this.searchYouTube({ key: YOUTUBE_API_KEY, q: event.target.value, maxResults: 5 }, (data) => {
+  handleChange() {
+    this.searchYouTube({ key: YOUTUBE_API_KEY, q: this.state.inputValue, maxResults: 5 }, (data) => {
       this.setState({
         videosListed: data,
-        currentVideo: data[0]
+        currentVideo: data[0],
+        inputValue: null
       });
     });
+  }
+
+  storeFormInput(value) {
+    this.state.inputValue = value;
   }
 
   render() {
@@ -65,7 +66,7 @@ class App extends React.Component {
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <Search handleChange={this.handleChange}/>
+            <Search handleChange={this.handleChange} storeFormInput={this.storeFormInput}/>
           </div>
         </nav>
         <div className="row">
@@ -84,7 +85,8 @@ class App extends React.Component {
     this.searchYouTube({ key: YOUTUBE_API_KEY, q: 'cute cats', maxResults: 5 }, (data) => {
       this.setState({
         videosListed: data,
-        currentVideo: data[0]
+        currentVideo: data[0],
+        inputValue: null
       });
     });
   }
